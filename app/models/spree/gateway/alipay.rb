@@ -5,6 +5,8 @@ module Spree
     preference :key, :string
     preference :iconUrl, :string
     preference :returnHost, :string
+    preference :server_public_key, :string
+    preference :client_private_key, :string
 
     def supports?(source)
       true
