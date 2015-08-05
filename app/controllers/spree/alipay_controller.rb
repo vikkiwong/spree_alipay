@@ -23,13 +23,15 @@ module Spree
 
     def alipay_wallet_url(options)
       options.merge!({
-        'service' => 'mobile.securitypay.pay'
+        'service' => 'mobile.securitypay.pay',
         'seller_id' => payment_method.preferences[:email],
         'partner' =>payment_method.preferences[:pid],
         '_input_charset' => 'utf-8',
 
       })
-      key = payment_method.preferences[:client_private_key])
+
+      key = OpenSSL::PKey::RSA.new(payment_method.preferences[:client_private_key].gsub('\n', "\n"))
+
       options.merge!({
         'sign_type' => 'RSA',
         'sign' => CGI::escape(Base64.encode64(key.sign(OpenSSL::Digest::SHA1.new, options.map{|k,v| "#{k}=\"#{v}\"" }.join('&'))).gsub("\n", '')),
