@@ -1,20 +1,20 @@
 <fieldset data-hook="alipay">
   <legend align="center"><%= Spree.t(:transaction, :scope => :alipay) %></legend>
 
-  <div class="row">
+  <div>
     <div class="alpha six columns">
       <dl>
         <dt><%= Spree.t(:trade_no, :scope => :alipay) %>:</dt>
-        <dd><%= payment.source.trade_no %></dd>
+        <dd><%= payment.source.try(:trade_no) %></dd>
 
         <dt><%= Spree.t(:out_trade_no, :scope => :alipay) %>:</dt>
-        <dd><%= payment.source.out_trade_no %></dd>
+        <dd><%= payment.source.try(:out_trade_no) %></dd>
 
         <dt><%= Spree.t(:seller, :scope => :alipay) %>:</dt>
-        <dd><%= payment.source.seller_email %></dd>
+        <dd><%= payment.source.try(:seller_email) %></dd>
 
         <dt><%= Spree.t(:buyer, :scope => :alipay) %>:</dt>
-        <dd><%= payment.source.buyer_email %></dd>
+        <dd><%= payment.source.try(:buyer_email) %></dd>
       </dl>
     </div>
   </div>
