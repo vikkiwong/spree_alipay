@@ -210,7 +210,7 @@ module Spree
       end
 
       def number
-        orders.map(&:number).join(',')
+        orders.map(&:number).join('')
       end
 
       def total
