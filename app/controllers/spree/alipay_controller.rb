@@ -128,7 +128,7 @@ module Spree
       end
 
 
-      if order_set.orders.all { |order| order.complete? }
+      if order_set.orders.all? { |order| order.complete? }
         success_return order_set
       else
         failure_return order_set
