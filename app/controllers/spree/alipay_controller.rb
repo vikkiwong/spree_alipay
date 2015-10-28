@@ -105,6 +105,12 @@ module Spree
         return
       end
 
+      # 只处理 trade_status = 'TRADE_SUCCESS' 的通知
+      unless params[:trade_status] == 'TRADE_SUCCESS' || params[:trade_status] == 'TRADE_FINISHED'
+        success_return order_set
+        return
+      end
+
       # unless params['sign'].downcase == Digest::MD5.hexdigest(params.except(*%w[id sign_type sign source payment_method_id]).sort.map{|k,v| "#{k}=#{CGI.unescape(v.to_s)}" }.join("&")+ payment_method.preferences[:key])
       #   failure_return order
       #   return
@@ -122,9 +128,9 @@ module Spree
           }),
           :amount => order.total,
           :payment_method => payment_method
-      })
+        })
 
-      order.next
+        order.next
       end
 
 
@@ -168,6 +174,7 @@ module Spree
           :payment_method => payment_method
         })
         order.next
+
         if order.complete?
           render json: { 'errCode' => 0, 'msg' => 'success'}
         else
