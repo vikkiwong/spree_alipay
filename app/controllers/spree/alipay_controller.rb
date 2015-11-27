@@ -89,6 +89,7 @@ module Spree
       # order = Spree::Order.find(params[:id]) || raise(ActiveRecord::RecordNotFound)
       order_set = OrderSet.new(params[:id])
       if order_set.orders.all? { |order| order.complete? }
+        Rails.logger.debug 'already completed'
         success_return order_set
         return
       end
@@ -100,13 +101,15 @@ module Spree
 
       request_valid = Timeout::timeout(10){ HTTParty.get("https://mapi.alipay.com/gateway.do?service=notify_verify&partner=#{payment_method.preferences[:pid]}&notify_id=#{params[:notify_id]}") }
 
-      unless request_valid && params[:total_fee] == order_set.total.to_s
+      unless request_valid #&& params[:total_fee] == order_set.total.to_s
+        Rails.logger.debug 'invalid request'
         failure_return order_set
         return
       end
 
       # 只处理 trade_status = 'TRADE_SUCCESS' 的通知
       unless params[:trade_status] == 'TRADE_SUCCESS' || params[:trade_status] == 'TRADE_FINISHED'
+        Rails.logger.debug 'neither TRADE_SUCCESS or TRADE_FINISHED'
         success_return order_set
         return
       end
